@@ -6,15 +6,17 @@ public class Result {
     Match.Pair games = new Match.Pair();
     Match.Pair balls = new Match.Pair();
 
-    public void setResult(String resultString) {
+    public void setResult(String resultString) throws NumberFormatException {
         String result = resultString.replaceAll(" ", "");
-        this.resultString = result;
         if (result.length() > 2) {
             String[] sets = result.split(",");
+            if (sets.length < 3 || sets.length > 5) {
+                throw new NumberFormatException();
+            }
             games = new Match.Pair();
             balls = new Match.Pair();
             for (String set : sets) {
-                int points = Math.abs(Integer.parseInt(set)); // TODO: handle exception
+                int points = Math.abs(Integer.parseInt(set));
                 if (set.contains("-")) {
                     games.bPoints++;
                     balls.aPoints += points;
@@ -25,6 +27,11 @@ public class Result {
                     balls.bPoints += points;
                 }
             }
+            this.resultString = result;
+        } else if (result.equals("\\")) {
+            this.resultString = result;
+        } else {
+            throw new NumberFormatException();
         }
     }
 

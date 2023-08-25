@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
 <?import javafx.scene.control.cell.*?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Text?>
 <VBox alignment="CENTER" prefHeight="960.0" prefWidth="640.0" spacing="20.0" xmlns:fx="http://javafx.com/fxml/1"
       xmlns="http://javafx.com/javafx/17.0.2-ea" fx:controller="com.example.tournament.Controller">
     <padding>
@@ -63,7 +62,4 @@
             </TableColumn>
         </columns>
     </TableView>
-
-<!--    <Label fx:id="vyhodnoceni" text="" style="-fx-font-size: 36; -fx-background-color: pink"/>-->
-<!--    <Button onAction="#onHelloButtonClick" text="Vyhodnotit" />-->
 </VBox>

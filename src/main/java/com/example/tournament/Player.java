@@ -2,9 +2,9 @@ package com.example.tournament;
 
 import javafx.beans.property.SimpleStringProperty;
 
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.stream.IntStream;
+
+import static com.example.tournament.Main.standing;
 
 public class Player {
     private final int seed;
@@ -63,15 +63,9 @@ public class Player {
         }
     }
 
-    public void updatePosition() { // TODO: implement sorting
-        int[] sortedIndices = Arrays.stream(IntStream.of(Main.wins).toArray())
-                                    .distinct()
-                                    .boxed()
-                                    .sorted(Comparator.comparing(Integer::intValue).reversed())
-                                    .mapToInt(ele -> ele)
-                                    .toArray();
-        position = Arrays.stream(sortedIndices).boxed().toList().indexOf(score.matches.aPoints) + 1;
-        System.out.println(getName() + ": position #" + position);
+    public void updatePosition() {
+        position = standing.indexOf(this) + 1;
+        System.out.println(getName() + " currently: #" + (standing.indexOf(this) + 1));
     }
 
     public int getSeed() {
@@ -158,15 +152,24 @@ public class Player {
 
         @Override
         public int compare(Player o1, Player o2) {
+            // compare wins
             int comparison = Integer.compare(o2.score.matches.aPoints, o1.score.matches.aPoints);
-            if (comparison == 0) {
+            if (comparison == 0) { // if equal, compare loses
                 comparison = Integer.compare(o1.score.matches.bPoints, o2.score.matches.bPoints);
             }
 
-            if (comparison == 0) {
-                int gameRatio1 = o1.score.matches.bPoints > 0 ? o1.score.games.aPoints/o1.score.matches.bPoints : o1.score.games.aPoints;
-                int gameRatio2 = o2.score.matches.bPoints > 0 ? o2.score.games.aPoints/o2.score.matches.bPoints : o2.score.games.aPoints;
-                comparison = Integer.compare(gameRatio1, gameRatio2);
+            if (comparison == 0) { // if equal, compare games ratio
+                double gameRatio1 = o1.score.matches.bPoints > 0 ?
+                           (double) o2.score.games.aPoints/o1.score.matches.bPoints : o1.score.games.aPoints;
+                double gameRatio2 = o2.score.matches.bPoints > 0 ?
+                           (double) o2.score.games.aPoints/o2.score.matches.bPoints : o2.score.games.aPoints;
+                comparison = Double.compare(gameRatio1, gameRatio2);
+            }
+
+            if (comparison == 0) { // if equal, compare points difference
+                int pointDiff1 = o1.score.balls.aPoints - o1.score.balls.bPoints;
+                int pointDiff2 = o2.score.balls.aPoints - o2.score.balls.bPoints;
+                comparison = Integer.compare(pointDiff2, pointDiff1);
             }
             return comparison;
         }

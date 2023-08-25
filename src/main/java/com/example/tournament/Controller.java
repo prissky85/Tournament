@@ -5,6 +5,8 @@ import javafx.beans.binding.Bindings;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -38,12 +40,6 @@ public class Controller implements Initializable {
     @FXML public TableColumn order;
     @FXML public TableColumn players;
     @FXML public TableColumn res;
-//    @FXML public Label vyhodnoceni;
-
-//    @FXML
-//    protected void onHelloButtonClick() {
-//        vyhodnoceni.setText("Kulíšek je buzna!");
-//    }
 
     private static final System.Logger LOGGER = System.getLogger("log");
 
@@ -137,14 +133,31 @@ public class Controller implements Initializable {
                                    .getItems()
                                    .get(t.getTablePosition().getRow());
             if (t.getTablePosition().getRow() > 8 - remainingGames) {
-                System.out.println("First, write down the result of match #" + (9 - remainingGames) + "  please."); // Replace by LOGGER
+                showAlertAndWait(matchesTable, "First, write down the result of match #" +
+                                                (9 - remainingGames) + ", please.");
                 return;
             }
-            match.getResult()
-                 .setResult(t.getNewValue().toString());
+            try {
+                match.getResult()
+                     .setResult(t.getNewValue().toString());
+            } catch (Exception e) {
+                showAlertAndWait(matchesTable, "Use the predetermined format of scores (best of five games) separated by comas, please.");
+                return;
+            }
             updateResults(match);
             updateRemaining();
         });
+    }
+
+    private void showAlertAndWait(TableView tableView, String message) {
+        tableView.refresh();
+        Alert alert = new Alert(Alert.AlertType.NONE, message, ButtonType.OK);
+        alert.setResizable(true);
+        alert.getDialogPane().setPrefWidth(550);
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.OK) {
+            alert.close();
+        }
     }
 
     private static void updateRemaining() {
